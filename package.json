@@ -1,0 +1,33 @@
+{
+  "name": "cloudie-gadget-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "nodemon --watch src --exec \"npx ts-node\" src/server.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/node": "^24.6.2",
+    "prisma": "^6.16.3",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.16.3",
+    "@types/express": "^5.0.3",
+    "cors": "^2.8.5",
+    "eslint": "^9.36.0",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2"
+  }
+}
