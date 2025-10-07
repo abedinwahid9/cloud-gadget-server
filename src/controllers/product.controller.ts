@@ -1,26 +1,22 @@
 import { Request, Response } from "express";
 import prisma from "../models/prisma"; // make sure prisma client is exported properly
-import {
-  generateOrderCode,
-  generateProductCode,
-} from "../libs/sequence.counter";
+import { generateProductCode } from "../libs/sequence.counter";
 
+// create product
 const createProduct = async (req: Request, res: Response) => {
   try {
-    const { name, category, price, variants } = req.body;
-
     const productId = await generateProductCode();
+
+    const newProduct = {
+      ...req.body,
+      productId,
+      reviews: [],
+    };
 
     if (!productId) return;
 
     const product = await prisma.product.create({
-      data: {
-        name,
-        category,
-        price,
-        variants,
-        productId,
-      },
+      data: newProduct,
     });
 
     res.status(201).json({
@@ -29,8 +25,20 @@ const createProduct = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Something went wrong", error });
+    res.status(501).json({ message: "product can't create", error });
   }
 };
 
-export { createProduct };
+// get all data
+const getAllProduct = async (req: Request, res: Response) => {
+  try {
+    const allProduct = await prisma.product.findMany();
+
+    res.status(200).json({ message: "all data get successfully", allProduct });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "product can't get", error });
+  }
+};
+
+export { createProduct, getAllProduct };
