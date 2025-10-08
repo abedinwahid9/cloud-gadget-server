@@ -7,8 +7,14 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "nodemon --watch src --exec \"npx ts-node\" src/server.ts",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev"
+    "prisma:migrate": "prisma migrate dev",
+    "db:generate": "prisma generate -schema=./prisma/schema/",
+    "db:push": "prisma db push -schema=./prisma/schema/",
+    "db:pull": "prisma db pull -schema=./prisma/schema/",
+    "db:studio": "prisma studio -schema=./prisma/schema/"
+  },
+  "prisma": {
+    "schema": "./prisma/schema/"
   },
   "keywords": [],
   "author": "",

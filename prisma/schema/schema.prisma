@@ -1,0 +1,19 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["prismaSchemaFolder"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Counter {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique
+  seq  Int
+}
+
+
