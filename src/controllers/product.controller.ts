@@ -74,4 +74,34 @@ const deleteProductById = async (req: Request, res: Response) => {
   }
 };
 
-export { createProduct, getAllProduct, getProductById, deleteProductById };
+// update product by id
+const updateProductById = async (req: Request, res: Response) => {
+  try {
+    const productId = req.params.id;
+    const updateData = req.body;
+
+    const updataProduct = await prisma.product.update({
+      where: { id: productId },
+      data: {
+        ...updateData,
+      },
+    });
+
+    res
+      .status(203)
+      .json({
+        message: `this ${productId} is updated successfully`,
+        updataProduct,
+      });
+  } catch (error) {
+    res.status(504).json({ message: "update functionality error", error });
+  }
+};
+
+export {
+  createProduct,
+  getAllProduct,
+  getProductById,
+  deleteProductById,
+  updateProductById,
+};
