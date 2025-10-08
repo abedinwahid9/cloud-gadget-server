@@ -29,6 +29,22 @@ const createProduct = async (req: Request, res: Response) => {
   }
 };
 
+// get product by id
+const getProductById = async (req: Request, res: Response) => {
+  try {
+    const productId = req.params.id;
+    const productById = await prisma.product.findUnique({
+      where: { id: productId },
+    });
+
+    res
+      .status(200)
+      .json({ message: "single product get successfully", productById });
+  } catch (error) {
+    res.status(500).json({ message: "single product can't get", error });
+  }
+};
+
 // get all data
 const getAllProduct = async (req: Request, res: Response) => {
   try {
@@ -41,4 +57,4 @@ const getAllProduct = async (req: Request, res: Response) => {
   }
 };
 
-export { createProduct, getAllProduct };
+export { createProduct, getAllProduct, getProductById };
