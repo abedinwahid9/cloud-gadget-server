@@ -57,4 +57,21 @@ const getAllProduct = async (req: Request, res: Response) => {
   }
 };
 
-export { createProduct, getAllProduct, getProductById };
+// delete product by id
+const deleteProductById = async (req: Request, res: Response) => {
+  try {
+    const productId = req.params.id;
+
+    const deleteProduct = await prisma.product.delete({
+      where: { id: productId },
+    });
+    res.status(203).json({
+      message: `successfully delete this ${productId} product`,
+      deleteProduct,
+    });
+  } catch (error) {
+    res.status(503).json({ message: "this product can't delete", error });
+  }
+};
+
+export { createProduct, getAllProduct, getProductById, deleteProductById };
