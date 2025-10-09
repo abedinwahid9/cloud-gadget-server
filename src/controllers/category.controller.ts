@@ -44,4 +44,30 @@ const deleteCategoryById = async (req: Request, res: Response) => {
   }
 };
 
-export { createCategory, getAllCategory, deleteCategoryById };
+const updataCategoryById = async (req: Request, res: Response) => {
+  try {
+    const categoryId = req.params.id;
+    const newCategory = req.body;
+
+    const updateCategory = await prisma.category.update({
+      where: { id: categoryId },
+      data: newCategory,
+    });
+
+    res.status(204).json({
+      message: `this ${categoryId} product update successfully`,
+      updateCategory,
+    });
+  } catch (error) {
+    res
+      .status(504)
+      .json({ message: "category update can't work, try again", error });
+  }
+};
+
+export {
+  createCategory,
+  getAllCategory,
+  deleteCategoryById,
+  updataCategoryById,
+};
