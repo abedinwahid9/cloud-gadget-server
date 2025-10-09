@@ -12,6 +12,6 @@ app.use(helmet());
 app.use(cors());
 
 // route
-app.use("/v1", router);
+app.use("/api/v1", router);
 
 export default app;

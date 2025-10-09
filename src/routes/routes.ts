@@ -1,7 +1,11 @@
 import express from "express";
-import productRoute from "./productRoute";
+import productRoute from "./product.route";
+import uploadRoute from "./upload.route";
+import categoryRoute from "./category.route";
 const router = express.Router();
 
 router.use("/product", productRoute);
+router.use("/upload", uploadRoute);
+router.use("/category", categoryRoute);
 
 export default router;

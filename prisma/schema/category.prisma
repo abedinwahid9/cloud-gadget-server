@@ -1,0 +1,13 @@
+model Category{
+    id String @id @default(auto()) @map("_id") @db.ObjectId()
+    name String
+    slug String
+    imageUrl String
+}
+
+model SubCategory {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    name String
+    slug String
+    categoryId  String @db.ObjectId
+}
