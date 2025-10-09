@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
 import handleMultipleUploadService from "../configs/upload.config";
-import path from "path";
 import fs from "fs";
+import path from "path";
 
 // multiple upload
 const uploadMultipleFiles = (req: Request, res: Response) => {
   const files = req.files as Express.Multer.File[];
+
   if (!files || files.length === 0) {
     return res.status(400).json({ error: "No files uploaded" });
   }
@@ -13,6 +14,18 @@ const uploadMultipleFiles = (req: Request, res: Response) => {
   res.status(200).json(data);
 };
 
+// get files
+const filePath = path.join(process.cwd(), "public", "uploads");
+const getAllFiles = async (req: Request, res: Response) => {
+  fs.readdir(filePath, (err, files) => {
+    if (err) return res.status(500).json({ error: "Failed to read uploads" });
+
+    const fileUrls = files.map((file) => `${filePath}\\${file}`);
+    res.json({ files: fileUrls });
+  });
+};
+
+// delete file
 const deleteFiles = async (req: Request, res: Response) => {
   const filePath = path.join(process.cwd(), "uploads", req.params.filename);
   fs.unlink(filePath, (err) => {
@@ -21,4 +34,4 @@ const deleteFiles = async (req: Request, res: Response) => {
   });
 };
 
-export { uploadMultipleFiles, deleteFiles };
+export { uploadMultipleFiles, deleteFiles, getAllFiles };
