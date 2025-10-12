@@ -4,14 +4,13 @@
     {
       "src": "dist/server.js",
       "use": "@vercel/node",
-      "config": { "includeFiles": ["dist/**"] }
+      "config": { "includeFiles": ["dist/**", "prisma/schema/**"] }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "dist/server.js",
-      "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+      "dest": "dist/server.js"
     }
   ]
 }
