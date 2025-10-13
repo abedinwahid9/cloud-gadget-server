@@ -1,5 +1,4 @@
 const handleMultipleUploadService = (files: Express.Multer.File[]) => {
-  console.log(files);
   return {
     message: "Files uploaded successfully!",
     files: files.map((file) => ({

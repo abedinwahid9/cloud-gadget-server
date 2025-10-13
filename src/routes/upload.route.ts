@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { upload } from "../middlewares/upload.middleware";
-
 import {
   deleteFiles,
   getAllFiles,
@@ -10,11 +9,9 @@ import {
 const router = Router();
 
 router.get("/file", getAllFiles);
-
 // upload  images/files
 router.post("/file", upload.array("files", 10), uploadMultipleFiles);
-
-// ✅ Delete Images/files
+// ✅ Delete Images/file
 router.delete("/:filename", deleteFiles);
 
 export default router;
