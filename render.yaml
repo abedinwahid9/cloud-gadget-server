@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: cloudie-gadget-backend
+    env: node
+    buildCommand: yarn run build
+    startCommand: yarn run start
+    plan: free
