@@ -6,7 +6,6 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
-    "start:prod": "node dist/src/server.js",
     "dev": "nodemon --watch src --exec \"npx ts-node\" src/server.ts",
     "prisma:migrate": "prisma migrate dev",
     "db:generate": "prisma generate -schema=./prisma/schema/",
