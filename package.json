@@ -2,10 +2,10 @@
   "name": "cloudie-gadget-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/server.js",
+  "main": "src/server.ts",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node src/server.js",
     "dev": "nodemon --watch src --exec \"npx ts-node\" src/server.ts",
     "prisma:migrate": "prisma migrate dev",
     "db:generate": "prisma generate -schema=./prisma/schema/",

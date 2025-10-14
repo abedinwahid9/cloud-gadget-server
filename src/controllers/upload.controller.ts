@@ -6,11 +6,13 @@ import path from "path";
 // multiple upload
 const uploadMultipleFiles = (req: Request, res: Response) => {
   const files = req.files as Express.Multer.File[];
+  console.log(files);
 
   if (!files || files.length === 0) {
-    return res.status(400).json({ error: "No files uploaded" });
+    return res.status(400).json({ error: "No files uploaded", files });
   }
   const data = handleMultipleUploadService(files);
+  console.log(data);
   res.status(200).json(data);
 };
 
@@ -20,7 +22,14 @@ const getAllFiles = async (req: Request, res: Response) => {
   fs.readdir(filePath, (err, files) => {
     if (err) return res.status(500).json({ error: "Failed to read uploads" });
 
-    const fileUrls = files.map((file) => `${filePath}\\${file}`);
+    const baseUrl = `${req.get("host")}`;
+
+    const fileUrls = files.map((file, i) => ({
+      id: i,
+      name: file,
+      thumbnail: `${req.protocol}://${baseUrl}/uploads/${file}`,
+    }));
+
     res.json({ files: fileUrls });
   });
 };
