@@ -1,10 +1,14 @@
-const handleMultipleUploadService = (files: Express.Multer.File[]) => {
+const handleMultipleUploadService = (
+  baseUrl: string,
+  protocol: string,
+  files: Express.Multer.File[]
+) => {
   return {
     message: "Files uploaded successfully!",
     files: files.map((file) => ({
       originalName: file.originalname,
       filename: file.filename,
-      path: file.path,
+      path: `${protocol}://${baseUrl}/uploads/${file.filename}`,
       size: file.size,
     })),
   };

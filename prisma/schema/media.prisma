@@ -1,0 +1,9 @@
+model Sliders{
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    image String
+    url String
+    caption String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+}
