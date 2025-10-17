@@ -1,8 +1,9 @@
 model Category{
     id String @id @default(auto()) @map("_id") @db.ObjectId()
-    name String
+    label String
+    value String
     slug String
-    imageUrl String
+    image String
 }
 
 model SubCategory {

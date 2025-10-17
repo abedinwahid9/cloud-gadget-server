@@ -3,10 +3,21 @@ import prisma from "../models/prisma";
 
 const createCategory = async (req: Request, res: Response) => {
   try {
-    const newCategory = req.body;
+    const { categories } = req.body;
+
+    if (!Array.isArray(categories) || categories.length === 0) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No sliders provided" });
+    }
 
     const category = await prisma.category.createMany({
-      data: newCategory,
+      data: categories.map((c) => ({
+        value: c.value,
+        label: c.label,
+        slug: c.slug,
+        image: c.image,
+      })),
     });
 
     res.status(201).json({ message: "category create successfully", category });

@@ -5,7 +5,6 @@ import prisma from "../models/prisma";
 const slidersGet = async (req: Request, res: Response) => {
   try {
     const sliders = await prisma.sliders.findMany();
-    console.log(sliders);
     res
       .status(200)
       .json({ message: "sliders data fetched successfully", sliders });
@@ -18,6 +17,7 @@ const slidersGet = async (req: Request, res: Response) => {
 const slidersCreate = async (req: Request, res: Response) => {
   try {
     const { sliders } = req.body;
+    console.log(sliders);
 
     if (!Array.isArray(sliders) || sliders.length === 0) {
       return res
