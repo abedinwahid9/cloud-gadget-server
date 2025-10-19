@@ -6,13 +6,12 @@ import path from "path";
 // multiple upload
 const uploadMultipleFiles = (req: Request, res: Response) => {
   const files = req.files as Express.Multer.File[];
-  console.log(files);
-
   if (!files || files.length === 0) {
     return res.status(400).json({ error: "No files uploaded", files });
   }
-  const data = handleMultipleUploadService(files);
-  console.log(data);
+  const baseUrl = `${req.get("host")}`;
+  const protocol = req.protocol;
+  const data = handleMultipleUploadService(baseUrl, protocol, files);
   res.status(200).json(data);
 };
 
@@ -36,7 +35,12 @@ const getAllFiles = async (req: Request, res: Response) => {
 
 // delete file
 const deleteFiles = async (req: Request, res: Response) => {
-  const filePath = path.join(process.cwd(), "uploads", req.params.filename);
+  const filePath = path.join(
+    process.cwd(),
+    "public",
+    "uploads",
+    req.params.filename
+  );
   fs.unlink(filePath, (err) => {
     if (err) return res.status(404).json({ message: "File not found" });
     res.json({ message: "File deleted successfully" });
