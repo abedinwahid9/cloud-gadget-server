@@ -17,7 +17,6 @@ const slidersGet = async (req: Request, res: Response) => {
 const slidersCreate = async (req: Request, res: Response) => {
   try {
     const { sliders } = req.body;
-    console.log(sliders);
 
     if (!Array.isArray(sliders) || sliders.length === 0) {
       return res
