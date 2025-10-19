@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import prisma from "../models/prisma";
 import { error } from "console";
 
+// merge cate with sub cate
 const mergeCategories = async (req: Request, res: Response) => {
   try {
     const category = await prisma.category.findMany();
@@ -58,14 +59,18 @@ const getAllCategory = async (req: Request, res: Response) => {
 
 const deleteCategoryById = async (req: Request, res: Response) => {
   try {
-    const categoryId = req.params.id;
-
+    const { id } = req.params;
+    const deleteSubCat = await prisma.subCategory.deleteMany({
+      where: {
+        categoryId: id,
+      },
+    });
     const deleteCategory = await prisma.category.delete({
-      where: { id: categoryId },
+      where: { id: id },
     });
 
     res.status(203).json({
-      message: `this ${categoryId} is delete successfully`,
+      message: `this ${id} is delete successfully`,
       deleteCategory,
     });
   } catch (error) {
