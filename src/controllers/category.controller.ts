@@ -7,14 +7,14 @@ const mergeCategories = async (req: Request, res: Response) => {
     const category = await prisma.category.findMany();
     const subCategory = await prisma.subCategory.findMany();
 
-    const merge = category.map((cat) => {
+    const categories = category.map((cat) => {
       const match = subCategory.filter((s) => s.categoryId === cat.id);
       return { ...cat, subCategory: match };
     });
 
-    console.log(merge);
-
-    res.status(200).json({ message: "merge category get successfully", merge });
+    res
+      .status(200)
+      .json({ message: "merge category get successfully", categories });
   } catch (error) {
     res.status(500).json({ message: "mergeCategories are not get", error });
   }

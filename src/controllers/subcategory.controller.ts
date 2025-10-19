@@ -29,4 +29,18 @@ const createSubCategory = async (req: Request, res: Response) => {
   }
 };
 
-export { createSubCategory, getAllSubCategory };
+const deleteSubCategoryById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const deleteSubCategory = await prisma.subCategory.delete({
+      where: { id },
+    });
+    res
+      .status(204)
+      .json({ message: "delete successfully done", deleteSubCategory });
+  } catch (error) {
+    res.status(504).json({ message: "sub category delete failed", error });
+  }
+};
+
+export { createSubCategory, getAllSubCategory, deleteSubCategoryById };
