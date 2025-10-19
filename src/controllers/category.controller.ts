@@ -1,6 +1,26 @@
 import { Request, Response } from "express";
 import prisma from "../models/prisma";
+import { error } from "console";
 
+const mergeCategories = async (req: Request, res: Response) => {
+  try {
+    const category = await prisma.category.findMany();
+    const subCategory = await prisma.subCategory.findMany();
+
+    const merge = category.map((cat) => {
+      const match = subCategory.filter((s) => s.categoryId === cat.id);
+      return { ...cat, subCategory: match };
+    });
+
+    console.log(merge);
+
+    res.status(200).json({ message: "merge category get successfully", merge });
+  } catch (error) {
+    res.status(500).json({ message: "mergeCategories are not get", error });
+  }
+};
+
+// create category
 const createCategory = async (req: Request, res: Response) => {
   try {
     const { categories } = req.body;
@@ -81,4 +101,5 @@ export {
   getAllCategory,
   deleteCategoryById,
   updataCategoryById,
+  mergeCategories,
 };
