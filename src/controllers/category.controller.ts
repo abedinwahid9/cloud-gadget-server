@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import prisma from "../models/prisma";
-import { error } from "console";
 
 // merge cate with sub cate
 const mergeCategories = async (req: Request, res: Response) => {
