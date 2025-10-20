@@ -5,5 +5,14 @@ model Sliders{
     caption String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+}
 
+model Banner{
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    banner String
+    image String
+    url String
+    caption String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
