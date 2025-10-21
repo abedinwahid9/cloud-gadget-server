@@ -33,4 +33,35 @@ const createBanner = async (req: Request, res: Response) => {
   }
 };
 
-export { createBanner };
+const getBannerByName = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const banners = await prisma.banner.findMany({
+      where: { banner: `banner-${id}` },
+    });
+
+    res
+      .status(200)
+      .json({ message: `get banner-${id} data successfully`, banners });
+  } catch (error) {
+    res.status(500).json({ message: "banner data not get", error });
+  }
+};
+
+const deleteBannerById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const deleteBanner = await prisma.banner.delete({
+      where: { id },
+    });
+    res
+      .status(204)
+      .json({ message: `${id} delete successfully done`, deleteBanner });
+  } catch (error) {
+    res.status(504).json({ message: "delete functionality error", error });
+  }
+};
+
+export { createBanner, getBannerByName, deleteBannerById };
