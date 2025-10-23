@@ -48,7 +48,22 @@ const getProductById = async (req: Request, res: Response) => {
 // get all data
 const getAllProduct = async (req: Request, res: Response) => {
   try {
-    const allProduct = await prisma.product.findMany();
+    const selectQuery = Object.keys(req.query).reduce(
+      (acc, key) => {
+        acc[key] = true;
+        return acc;
+      },
+      {} as Record<string, boolean>
+    );
+    let allProduct;
+
+    if (selectQuery && Object.keys(selectQuery).length > 0) {
+      allProduct = await prisma.product.findMany({
+        select: selectQuery,
+      });
+    } else {
+      allProduct = await prisma.product.findMany();
+    }
 
     res.status(200).json({ message: "all data get successfully", allProduct });
   } catch (error) {
@@ -87,12 +102,10 @@ const updateProductById = async (req: Request, res: Response) => {
       },
     });
 
-    res
-      .status(203)
-      .json({
-        message: `this ${productId} is updated successfully`,
-        updataProduct,
-      });
+    res.status(203).json({
+      message: `this ${productId} is updated successfully`,
+      updataProduct,
+    });
   } catch (error) {
     res.status(504).json({ message: "update functionality error", error });
   }

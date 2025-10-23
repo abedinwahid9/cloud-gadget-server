@@ -1,7 +1,7 @@
 model Product{
   id String  @id @default(auto()) @map("_id") @db.ObjectId 
   productId String 
-  name String
+  title String
   description String
   images String[]
   category String
@@ -12,6 +12,16 @@ model Product{
   status Boolean
   variants Json[] 
   reviews Json
+  tags String[]
+  collections String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+
+
+
+
+
+
+
