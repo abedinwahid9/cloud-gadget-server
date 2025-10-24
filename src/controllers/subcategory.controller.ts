@@ -1,7 +1,17 @@
 import { Request, Response } from "express";
 import prisma from "../models/prisma";
 
-const getAllSubCategory = async (req: Request, res: Response) => {};
+const getAllSubCategory = async (req: Request, res: Response) => {
+  try {
+    const sub_cate = await prisma.subCategory.findMany();
+
+    res
+      .status(200)
+      .json({ message: "get all sub-category data successfully", sub_cate });
+  } catch (error) {
+    res.status(500).json({ message: "sub-category data error", error });
+  }
+};
 
 const createSubCategory = async (req: Request, res: Response) => {
   try {
