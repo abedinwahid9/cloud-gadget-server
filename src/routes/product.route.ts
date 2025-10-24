@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.post("/", createProduct);
 router.get("/", getAllProduct);
-router.get("/:collections", getCollectionProduct);
+router.get("/collections/:collection", getCollectionProduct);
 router.get("/:id", getProductById);
 router.delete("/:id", deleteProductById);
 router.patch("/:id", updateProductById);

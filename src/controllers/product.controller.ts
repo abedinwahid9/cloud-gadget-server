@@ -48,7 +48,7 @@ const getProductById = async (req: Request, res: Response) => {
 // get product by collection
 const getCollectionProduct = async (req: Request, res: Response) => {
   try {
-    const { collections } = req.params;
+    const { collection } = req.params;
     const selectQuery = Object.keys(req.query).reduce(
       (acc, key) => {
         acc[key] = true;
@@ -60,12 +60,12 @@ const getCollectionProduct = async (req: Request, res: Response) => {
 
     if (selectQuery && Object.keys(selectQuery).length > 0) {
       allProduct = await prisma.product.findMany({
-        where: { collections: collections },
+        where: { collections: collection },
         select: selectQuery,
       });
     } else {
       allProduct = await prisma.product.findMany({
-        where: { collections: collections },
+        where: { collections: collection },
       });
     }
 
