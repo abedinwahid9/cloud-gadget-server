@@ -10,6 +10,7 @@ model SubCategory {
     id String @id @default(auto()) @map("_id") @db.ObjectId
     label String
     value String
+    image String
     slug String
     categoryId  String @db.ObjectId
 }
