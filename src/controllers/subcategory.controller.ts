@@ -25,6 +25,7 @@ const createSubCategory = async (req: Request, res: Response) => {
     const newSubCategory = await prisma.subCategory.createMany({
       data: subCategories.map((c) => ({
         label: c.label,
+        image: c.image,
         value: c.value,
         slug: c.slug,
         categoryId: c.categoryId,

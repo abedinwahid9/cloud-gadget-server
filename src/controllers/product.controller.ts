@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import prisma from "../models/prisma"; // make sure prisma client is exported properly
+import prisma from "../models/prisma";
 import { generateProductCode } from "../libs/sequence.counter";
 
 // create product
