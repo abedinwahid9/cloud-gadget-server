@@ -79,26 +79,53 @@ const getCollectionProduct = async (req: Request, res: Response) => {
 // get all data
 const getAllProduct = async (req: Request, res: Response) => {
   try {
-    const selectQuery = Object.keys(req.query).reduce(
+    const fields = req.query.fields as string;
+    const { sortBy, orderSort } = req.query;
+
+    // des & asc order query
+    const orderBy: Record<string, "asc" | "desc"> = {};
+    if (typeof sortBy === "string" && orderSort) {
+      orderBy[sortBy] = orderSort === "desc" ? "desc" : "asc";
+    }
+
+    // specific filed data get
+    const selectField = fields ? fields.split(",") : [];
+    const selectQuery = selectField.reduce(
       (acc, key) => {
         acc[key] = true;
         return acc;
       },
       {} as Record<string, boolean>
     );
-    let allProduct;
 
-    if (selectQuery && Object.keys(selectQuery).length > 0) {
-      allProduct = await prisma.product.findMany({
-        select: selectQuery,
-      });
-    } else {
-      allProduct = await prisma.product.findMany();
+    const queryOptions: any = {
+      orderBy: orderBy,
+    };
+
+    if (selectField && fields) {
+      queryOptions.select = selectQuery;
     }
 
+    console.log(queryOptions);
+
+    let allProduct = await prisma.product.findMany(queryOptions);
     res.status(200).json({ message: "all data get successfully", allProduct });
+
+    // let allProduct = await prisma.product.findMany({
+    //   select: { fields },
+    // });
+
+    // let allProduct;
+    // if (selectQuery && Object.keys(selectQuery).length > 0) {
+    //   allProduct = await prisma.product.findMany({
+    //     select: selectQuery,
+    //   });
+    // } else {
+    //   allProduct = await prisma.product.findMany();
+    // }
+    // res.status(200).json({ message: "all data get successfully", allProduct });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).json({ message: "product can't get", error });
   }
 };

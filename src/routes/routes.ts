@@ -8,7 +8,7 @@ import bannerRouter from "./banner.route";
 
 const router = express.Router();
 
-router.use("/product", productRoute);
+router.use("/product", productRoute);   
 router.use("/upload", uploadRoute);
 router.use("/promotion/sliders", slidersRoute);
 router.use("/category", categoryRoute);
