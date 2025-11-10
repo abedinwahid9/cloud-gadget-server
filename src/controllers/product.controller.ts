@@ -84,7 +84,7 @@ const maxProductPrice = async (req: Request, res: Response) => {
         price: true,
       },
     });
-    console.log(maxPrice);
+    res.status(200).json({ message: "successfully get max price", maxPrice });
   } catch (err) {
     res.status(500).json({ message: "max price not get", err });
   }
