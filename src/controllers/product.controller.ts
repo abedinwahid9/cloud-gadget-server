@@ -76,11 +76,32 @@ const getCollectionProduct = async (req: Request, res: Response) => {
   }
 };
 
+// max price
+const maxProductPrice = async (req: Request, res: Response) => {
+  try {
+    const maxPrice = await prisma.product.aggregate({
+      _max: {
+        price: true,
+      },
+    });
+    console.log(maxPrice);
+  } catch (err) {
+    res.status(500).json({ message: "max price not get", err });
+  }
+};
+
 // get all data
 const getAllProduct = async (req: Request, res: Response) => {
   try {
     const fields = req.query.fields as string;
-    const { sortBy, orderSort } = req.query;
+    const { sortBy, orderSort, maxPrice, minPrice } = req.query;
+
+    // maxPrice and minPrice sort
+    const price: { gte?: number; lte?: number } = {};
+    if (typeof minPrice === "string" && typeof maxPrice === "string") {
+      price.gte = Number(minPrice);
+      price.lte = Number(maxPrice);
+    }
 
     // des & asc order query
     const orderBy: Record<string, "asc" | "desc"> = {};
@@ -98,32 +119,25 @@ const getAllProduct = async (req: Request, res: Response) => {
       {} as Record<string, boolean>
     );
 
-    const queryOptions: any = {
-      orderBy: orderBy,
-    };
+    // query options
+    const queryOptions: any = {};
 
+    // check orderBy
+    if (sortBy && orderSort) {
+      queryOptions.orderBy = orderBy;
+    }
+
+    // check fields
     if (selectField && fields) {
       queryOptions.select = selectQuery;
     }
-
-    console.log(queryOptions);
+    // filter by price range
+    if (maxPrice && minPrice) {
+      queryOptions.where = { price: price };
+    }
 
     let allProduct = await prisma.product.findMany(queryOptions);
     res.status(200).json({ message: "all data get successfully", allProduct });
-
-    // let allProduct = await prisma.product.findMany({
-    //   select: { fields },
-    // });
-
-    // let allProduct;
-    // if (selectQuery && Object.keys(selectQuery).length > 0) {
-    //   allProduct = await prisma.product.findMany({
-    //     select: selectQuery,
-    //   });
-    // } else {
-    //   allProduct = await prisma.product.findMany();
-    // }
-    // res.status(200).json({ message: "all data get successfully", allProduct });
   } catch (error) {
     // console.log(error);
     res.status(500).json({ message: "product can't get", error });
@@ -175,5 +189,6 @@ export {
   getProductById,
   deleteProductById,
   updateProductById,
+  maxProductPrice,
   getCollectionProduct,
 };
