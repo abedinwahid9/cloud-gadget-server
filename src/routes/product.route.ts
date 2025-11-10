@@ -5,6 +5,7 @@ import {
   getAllProduct,
   getCollectionProduct,
   getProductById,
+  maxProductPrice,
   updateProductById,
 } from "../controllers/product.controller";
 
@@ -12,6 +13,7 @@ const router = express.Router();
 
 router.post("/", createProduct);
 router.get("/", getAllProduct);
+router.get("/max-price", maxProductPrice);
 router.get("/collections/:collection", getCollectionProduct);
 router.get("/:id", getProductById);
 router.delete("/:id", deleteProductById);
