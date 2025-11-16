@@ -187,6 +187,25 @@ const updateProductById = async (req: Request, res: Response) => {
   }
 };
 
+// update product status by id
+const updateProductStatus = async (req: Request, res: Response) => {
+  try {
+    const { status } = req.body;
+    const productId = req.params.id;
+
+    const updataStatus = await prisma.product.update({
+      where: { id: productId },
+      data: { status: Boolean(status) },
+    });
+
+    res
+      .status(203)
+      .json({ message: `${productId}product status updated`, updataStatus });
+  } catch (error) {
+    res.status(504).json({ message: "update functionality error", error });
+  }
+};
+
 export {
   createProduct,
   getAllProduct,
@@ -195,4 +214,5 @@ export {
   updateProductById,
   maxProductPrice,
   getCollectionProduct,
+  updateProductStatus,
 };
