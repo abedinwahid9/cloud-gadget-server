@@ -60,7 +60,7 @@ const getCollectionProduct = async (req: Request, res: Response) => {
 
     if (selectQuery && Object.keys(selectQuery).length > 0) {
       allProduct = await prisma.product.findMany({
-        where: { collections: collection },
+        where: { collections: collection, status: true },
         select: selectQuery,
       });
     } else {
@@ -124,16 +124,11 @@ const getAllProduct = async (req: Request, res: Response) => {
     );
 
     // query options
-    const queryOptions: any = {};
+    const queryOptions: any = { where: {} };
 
     // check orderBy
     if (sortBy && orderSort) {
       queryOptions.orderBy = orderBy;
-    }
-
-    // only fetch active product
-    if (status) {
-      queryOptions.where = { status: status === "true" };
     }
 
     // check fields
@@ -142,7 +137,11 @@ const getAllProduct = async (req: Request, res: Response) => {
     }
     // filter by price range
     if (maxPrice && minPrice) {
-      queryOptions.where = { price: price };
+      queryOptions.where.price = price;
+    }
+    // only fetch active product
+    if (status) {
+      queryOptions.where.status = Boolean(status);
     }
 
     let allProduct = await prisma.product.findMany(queryOptions);
