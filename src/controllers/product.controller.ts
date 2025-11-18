@@ -98,7 +98,7 @@ const maxProductPrice = async (req: Request, res: Response) => {
 const getAllProduct = async (req: Request, res: Response) => {
   try {
     const fields = req.query.fields as string;
-    const { sortBy, orderSort, maxPrice, minPrice } = req.query;
+    const { sortBy, orderSort, maxPrice, minPrice, status } = req.query;
 
     // maxPrice and minPrice sort
     const price: { gte?: number; lte?: number } = {};
@@ -129,6 +129,11 @@ const getAllProduct = async (req: Request, res: Response) => {
     // check orderBy
     if (sortBy && orderSort) {
       queryOptions.orderBy = orderBy;
+    }
+
+    // only fetch active product
+    if (status) {
+      queryOptions.where = { status: status === "true" };
     }
 
     // check fields
