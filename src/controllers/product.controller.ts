@@ -98,7 +98,15 @@ const maxProductPrice = async (req: Request, res: Response) => {
 const getAllProduct = async (req: Request, res: Response) => {
   try {
     const fields = req.query.fields as string;
-    const { sortBy, orderSort, maxPrice, minPrice, status } = req.query;
+    const {
+      sortBy,
+      orderSort,
+      maxPrice,
+      minPrice,
+      status,
+      category,
+      sub_category,
+    } = req.query;
 
     // maxPrice and minPrice sort
     const price: { gte?: number; lte?: number } = {};
@@ -142,6 +150,14 @@ const getAllProduct = async (req: Request, res: Response) => {
     // only fetch active product
     if (status) {
       queryOptions.where.status = Boolean(status);
+    }
+
+    // category and sub category find
+    if (category) {
+      queryOptions.where.category = category;
+    }
+    if (category && sub_category) {
+      queryOptions.where.sub_category = sub_category;
     }
 
     let allProduct = await prisma.product.findMany(queryOptions);
