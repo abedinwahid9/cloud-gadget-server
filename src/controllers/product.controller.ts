@@ -94,11 +94,20 @@ const maxProductPrice = async (req: Request, res: Response) => {
   }
 };
 
-// get all data
-const getAllProduct = async (req: Request, res: Response) => {
+// get search data
+const getProductBySearch = async (req: Request, res: Response) => {
   try {
     const fields = req.query.fields as string;
-    const { sortBy, orderSort, maxPrice, minPrice, status } = req.query;
+    const {
+      sortBy,
+      orderSort,
+      maxPrice,
+      minPrice,
+      status,
+      category,
+      sub_category,
+      search,
+    } = req.query;
 
     // maxPrice and minPrice sort
     const price: { gte?: number; lte?: number } = {};
@@ -142,6 +151,104 @@ const getAllProduct = async (req: Request, res: Response) => {
     // only fetch active product
     if (status) {
       queryOptions.where.status = Boolean(status);
+    }
+
+    // category and sub category find
+    if (category) {
+      queryOptions.where.category = category;
+    }
+    if (category && sub_category) {
+      queryOptions.where.sub_category = sub_category;
+    }
+
+    if (search) {
+      queryOptions.where.OR = [
+        { title: { contains: search, mode: "insensitive" } },
+        { tags: { has: search } },
+      ];
+    }
+    console.log(queryOptions);
+
+    let allProduct = await prisma.product.findMany(queryOptions);
+    res.status(200).json({ message: "all data get successfully", allProduct });
+  } catch (error) {
+    // console.log(error);
+    res.status(500).json({ message: "product can't get", error });
+  }
+};
+// get all data
+const getAllProduct = async (req: Request, res: Response) => {
+  try {
+    const fields = req.query.fields as string;
+    const {
+      sortBy,
+      orderSort,
+      maxPrice,
+      minPrice,
+      status,
+      category,
+      sub_category,
+      search,
+    } = req.query;
+
+    // maxPrice and minPrice sort
+    const price: { gte?: number; lte?: number } = {};
+    if (typeof minPrice === "string" && typeof maxPrice === "string") {
+      price.gte = Number(minPrice);
+      price.lte = Number(maxPrice);
+    }
+
+    // des & asc order query
+    const orderBy: Record<string, "asc" | "desc"> = {};
+    if (typeof sortBy === "string" && orderSort) {
+      orderBy[sortBy] = orderSort === "desc" ? "desc" : "asc";
+    }
+
+    // specific filed data get
+    const selectField = fields ? fields.split(",") : [];
+    const selectQuery = selectField.reduce(
+      (acc, key) => {
+        acc[key] = true;
+        return acc;
+      },
+      {} as Record<string, boolean>
+    );
+
+    // query options
+    const queryOptions: any = { where: {} };
+
+    // check orderBy
+    if (sortBy && orderSort) {
+      queryOptions.orderBy = orderBy;
+    }
+
+    // check fields
+    if (selectField && fields) {
+      queryOptions.select = selectQuery;
+    }
+    // filter by price range
+    if (maxPrice && minPrice) {
+      queryOptions.where.price = price;
+    }
+    // only fetch active product
+    if (status) {
+      queryOptions.where.status = Boolean(status);
+    }
+
+    // category and sub category find
+    if (category) {
+      queryOptions.where.category = category;
+    }
+    if (category && sub_category) {
+      queryOptions.where.sub_category = sub_category;
+    }
+
+    // if search any product
+    if (search) {
+      queryOptions.where.OR = [
+        { title: { contains: search, mode: "insensitive" } },
+        { tags: { has: search } },
+      ];
     }
 
     let allProduct = await prisma.product.findMany(queryOptions);
@@ -213,6 +320,7 @@ const updateProductStatus = async (req: Request, res: Response) => {
 export {
   createProduct,
   getAllProduct,
+  getProductBySearch,
   getProductById,
   deleteProductById,
   updateProductById,
