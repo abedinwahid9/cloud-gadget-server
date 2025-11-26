@@ -162,7 +162,10 @@ const getProductBySearch = async (req: Request, res: Response) => {
     }
 
     if (search) {
-      queryOptions.where.title = { contains: search };
+      queryOptions.where.OR = [
+        { title: { contains: search, mode: "insensitive" } },
+        { tags: { has: search } },
+      ];
     }
     console.log(queryOptions);
 
@@ -241,9 +244,11 @@ const getAllProduct = async (req: Request, res: Response) => {
     }
 
     // if search any product
-
     if (search) {
-      queryOptions.where.title = { contains: search, mode: "insensitive" };
+      queryOptions.where.OR = [
+        { title: { contains: search, mode: "insensitive" } },
+        { tags: { has: search } },
+      ];
     }
 
     let allProduct = await prisma.product.findMany(queryOptions);
