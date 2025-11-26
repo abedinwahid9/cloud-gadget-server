@@ -8,12 +8,14 @@ import {
   maxProductPrice,
   updateProductById,
   updateProductStatus,
+  getProductBySearch,
 } from "../controllers/product.controller";
 
 const router = express.Router();
 
 router.post("/", createProduct);
 router.get("/", getAllProduct);
+router.get("/search", getProductBySearch);
 router.get("/max-price", maxProductPrice);
 router.get("/collections/:collection", getCollectionProduct);
 router.get("/:id", getProductById);

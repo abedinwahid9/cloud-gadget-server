@@ -13,6 +13,23 @@ const getAllSubCategory = async (req: Request, res: Response) => {
   }
 };
 
+const getSubCategoryByCategory = async (req: Request, res: Response) => {
+  try {
+    const { category } = req.params;
+
+    const sub_cate = await prisma.subCategory.findMany({
+      where: { categoryId: category },
+    });
+    res
+      .status(201)
+      .json({ message: "get sub category by category successfully", sub_cate });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "sub-category data error by category", err });
+  }
+};
+
 const createSubCategory = async (req: Request, res: Response) => {
   try {
     const { subCategories } = req.body;
@@ -54,4 +71,9 @@ const deleteSubCategoryById = async (req: Request, res: Response) => {
   }
 };
 
-export { createSubCategory, getAllSubCategory, deleteSubCategoryById };
+export {
+  createSubCategory,
+  getAllSubCategory,
+  deleteSubCategoryById,
+  getSubCategoryByCategory,
+};
