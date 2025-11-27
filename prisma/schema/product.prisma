@@ -1,27 +1,21 @@
-model Product{
-  id String  @id @default(auto()) @map("_id") @db.ObjectId 
-  productId String 
-  title String
-  description String
-  images String[]
-  category String
-  sub_category String 
-  price Float
-  discount Float
+model Product {
+  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+  productId      String      @unique
+  title          String
+  description    String
+  images         String[]
+  category       String
+  sub_category   String
+  price          Float
+  discount       Float
   stock_quantity Int
-  status Boolean
-  variants Json[] 
-  reviews Json
-  tags String[]
-  collections String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  status         Boolean
+  variants       Json[]
+  tags           String[]
+  collections    String
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  // reviews        Review[]    @relation("ProductReviews")
+  // orderItems     Order[]
+  // wishlistItems  Wishlist[]
 }
-
-
-
-
-
-
-
-

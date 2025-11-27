@@ -1,0 +1,16 @@
+// model Order {
+//   id        String   @id @default(auto()) @map("_id") @db.ObjectId
+//   userId    String   @db.ObjectId          // <-- local field to store user ID
+//   user      User     @relation("UserOrders", fields: [id], references: [email])
+//   total     Float
+//   status    OrderStatus @default(PENDING)
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// enum OrderStatus {
+//   PENDING
+//   PROCESSING
+//   COMPLETED
+//   CANCELLED
+// }

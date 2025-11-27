@@ -1,0 +1,21 @@
+model User {
+  id             String      @id @default(auto()) @map("_id") @db.ObjectId 
+  name           String
+  email          String      @unique
+  password       String
+  role           Role        @default(CUSTOMER)
+  isBlocked      Boolean     @default(false) 
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  // addresses      Address[]   @relation("UserAddresses")
+  // orders         Order[]     @relation("UserOrders")
+  // reviews        Review[]    @relation("UserReviews")
+  // wishlistItems  Wishlist[]  @relation("UserWishlist")
+}
+
+enum Role {
+  CUSTOMER
+  VENDOR
+  ADMIN
+  RESELLER
+}
