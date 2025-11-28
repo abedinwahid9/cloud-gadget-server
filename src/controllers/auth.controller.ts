@@ -3,16 +3,18 @@ import prisma from "../models/prisma";
 import { hashPassword, passwordCompare } from "../services/auth.services";
 import { jwtSign, jwtVerify } from "../libs/jwt/jwt";
 
-const access_token_expires = 5 * 60 * 1000;
+const access_token_expires = 15 * 60 * 1000;
+const jwt_expires = "15m";
 
 // ------------ check me --------------
 
 const checkMe = async (req: Request, res: Response) => {
   try {
     const token = req.cookies.access_token;
+
     if (!token) return res.status(401).json({ message: "Not logged in" });
     const payload = jwtVerify(token);
-
+    console.log(payload);
     res.status(201).json({ message: "user get", payload });
   } catch (err) {
     res.status(402).json({ message: "user not found", err });
@@ -38,14 +40,14 @@ const userCreate = async (req: Request, res: Response) => {
     });
     const accessToken = await jwtSign(
       { email: newUser.email, id: newUser.id, role: newUser.role },
-      "1m"
+      jwt_expires
     );
     // Set cookie
     res.cookie("access_token", accessToken, {
       httpOnly: true,
       secure: false, // set to true in production
       sameSite: "lax",
-      maxAge: access_token_expires, // 60 minute
+      maxAge: access_token_expires,
     });
     res.status(200).json({
       message: "signup successfully",
@@ -77,7 +79,7 @@ const userLogin = async (req: Request, res: Response) => {
 
     const accessToken = await jwtSign(
       { email: user.email, id: user.id, role: user.role },
-      "1m"
+      jwt_expires
     );
     // Set cookie
     res.cookie("access_token", accessToken, {
@@ -104,14 +106,15 @@ const userLogin = async (req: Request, res: Response) => {
 // ---------- logout functionality ---------------------
 const userLogout = async (req: Request, res: Response) => {
   try {
-    // Set cookie
+    const token = req.cookies.access_token;
+    if (!token) return res.status(401).json({ message: "Not logged in" });
     res.cookie("access_token", "invalid", {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
       maxAge: 0,
     });
-    res.status(503).json({ message: "logout successfully" });
+    res.status(203).json({ message: "logout successfully" });
   } catch (err) {
     res.status(503).json({ message: "logout failed", err });
   }
