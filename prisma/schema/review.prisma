@@ -1,0 +1,10 @@
+// model Review {
+//   id       String @id @default(auto()) @map("_id") @db.ObjectId
+//   userId   String @db.ObjectId      // <-- local field in Review
+//   user     User   @relation("UserReviews", fields: [id], references: [email])
+//   product  Product @relation(fields: [id], references: [productId])
+//   productId String @db.ObjectId
+//   rating   Int
+//   comment  String?
+//   createdAt DateTime @default(now())
+// }

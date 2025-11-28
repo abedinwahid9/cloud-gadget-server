@@ -1,0 +1,7 @@
+// model Wishlist {
+//   id        String   @id @default(auto()) @map("_id") @db.ObjectId
+//   userId    String   @db.ObjectId        // <-- local field to store user ID
+//   user      User     @relation("UserWishlist", fields: [id], references: [email])
+//   productId String   @db.ObjectId
+//   createdAt DateTime @default(now())
+// }
