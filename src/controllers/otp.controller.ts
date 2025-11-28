@@ -7,6 +7,7 @@ import prisma from "../models/prisma";
 const optSend = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
+
     const otpGen = otpGenerate();
     const newOtp = { email, otp: otpGen };
 
@@ -35,10 +36,10 @@ const verifyOtp = async (req: Request, res: Response) => {
       },
     });
 
-    if (Number(saveOtp?.otp) === otp) {
+    if (saveOtp?.otp === otp) {
       res.status(200).json({ message: "email verify successful" });
     } else {
-      res.status(200).json({ message: "try again" });
+      res.status(202).json({ message: "try again" });
     }
   } catch (err) {
     res.status(201).json({ message: "email verify failed", err });
