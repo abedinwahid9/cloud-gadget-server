@@ -5,7 +5,7 @@ import categoryRoute from "./category.route";
 import slidersRoute from "./sliders.route";
 import subCategoryRouter from "./subcategory.route";
 import bannerRouter from "./banner.route";
-import signupRouter from "./register.route";
+import signupRouter from "./auth.route";
 import otpRouter from "./otp.route";
 
 const router = express.Router();
@@ -16,7 +16,7 @@ router.use("/promotion/sliders", slidersRoute);
 router.use("/category", categoryRoute);
 router.use("/sub-category", subCategoryRouter);
 router.use("/banner", bannerRouter);
-router.use("/register", signupRouter);
+router.use("/auth", signupRouter);
 router.use("/otp", otpRouter);
 
 export default router;
