@@ -16,7 +16,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://cloudiegadget.netlify.app",
+      "https://cloud-gadget-server.onrender.com",
     ],
     credentials: true,
   })
