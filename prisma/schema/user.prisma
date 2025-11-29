@@ -15,7 +15,7 @@ model User {
 
 enum Role {
   CUSTOMER 
-  VENDOR
+  MANAGER
   ADMIN
   RESELLER
 }
