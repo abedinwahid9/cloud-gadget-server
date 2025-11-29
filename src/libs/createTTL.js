@@ -1,16 +1,20 @@
-import { Prisma } from "@prisma/client";
+import prisma from "../models/prisma";
 
 export const initTTL = async () => {
-  await Prisma.$runCommandRaw({
-    createIndexes: "Otp",
-    indexes: [
-      {
-        key: { createdAt: 1 }, // index on createdAt
-        name: "otp_expire", // index name
-        expireAfterSeconds: 60 * 3, // auto-delete after 2 minutes
-      },
-    ],
-  });
+  try {
+    await prisma.$runCommandRaw({
+      createIndexes: "Otp",
+      indexes: [
+        {
+          key: { createdAt: 1 },
+          name: "otp_expire",
+          expireAfterSeconds: 120, // 10 minutes
+        },
+      ],
+    });
 
-  // console.log("TTL index created successfully");
+    // console.log("TTL index created");
+  } catch (e) {
+    // console.error("TTL error:", e);
+  }
 };

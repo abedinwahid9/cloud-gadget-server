@@ -6,15 +6,14 @@ import { jwtSign, jwtVerify } from "../libs/jwt/jwt";
 const access_token_expires = 15 * 60 * 1000;
 const jwt_expires = "15m";
 
-// ------------ check me --------------
-
+// ----------------- check me ------------------------
 const checkMe = async (req: Request, res: Response) => {
   try {
     const token = req.cookies.access_token;
 
     if (!token) return res.status(401).json({ message: "Not logged in" });
     const payload = jwtVerify(token);
-    console.log(payload);
+
     res.status(201).json({ message: "user get", payload });
   } catch (err) {
     res.status(402).json({ message: "user not found", err });
@@ -25,30 +24,44 @@ const checkMe = async (req: Request, res: Response) => {
 const userCreate = async (req: Request, res: Response) => {
   try {
     const { email, password, name } = req.body;
-    // todo bcrypt.hash(myPlaintextPassword, saltRounds);
 
+    if (req?.user !== email) {
+      res.status(403).json({ message: "user not found" });
+    }
+    // todo bcrypt.hash(myPlaintextPassword, saltRounds);
     const hashPass = await hashPassword(password);
-    // const user = await prisma.user.findFirst({
-    //   where: { email },
-    // });
-    // if (user)
-    //   return res
-    //     .status(201)
-    //     .json({ message: "this email already exists, use another email" });
+    const user = await prisma.user.findFirst({
+      where: { email },
+    });
+    if (user)
+      return res
+        .status(201)
+        .json({ message: "this email already exists, use another email" });
+
     const newUser = await prisma.user.create({
       data: { email, password: hashPass, name },
     });
+
     const accessToken = await jwtSign(
       { email: newUser.email, id: newUser.id, role: newUser.role },
       jwt_expires
     );
-    // Set cookie
+    // Set cookie for token
     res.cookie("access_token", accessToken, {
       httpOnly: true,
       secure: false, // set to true in production
       sameSite: "lax",
       maxAge: access_token_expires,
     });
+
+    // Set cookie for user role
+    res.cookie("user_role", newUser.role, {
+      httpOnly: true,
+      secure: false, // set to true in production
+      sameSite: "lax",
+      maxAge: access_token_expires,
+    });
+
     res.status(200).json({
       message: "signup successfully",
       user: {
@@ -88,7 +101,13 @@ const userLogin = async (req: Request, res: Response) => {
       sameSite: "lax",
       maxAge: access_token_expires, // 60 minute
     });
-
+    // Set cookie for user role
+    res.cookie("user_role", user.role, {
+      httpOnly: true,
+      secure: false, // set to true in production
+      sameSite: "lax",
+      maxAge: access_token_expires,
+    });
     return res.status(200).json({
       message: "login successful",
       user: {
@@ -109,6 +128,13 @@ const userLogout = async (req: Request, res: Response) => {
     const token = req.cookies.access_token;
     if (!token) return res.status(401).json({ message: "Not logged in" });
     res.cookie("access_token", "invalid", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 0,
+    });
+    // Set cookie for user role
+    res.cookie("user_role", "", {
       httpOnly: true,
       secure: false,
       sameSite: "lax",

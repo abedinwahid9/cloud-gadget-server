@@ -71,7 +71,6 @@ const getCollectionProduct = async (req: Request, res: Response) => {
 
     res.status(200).json({ message: "all data get successfully", allProduct });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "product can't get", error });
   }
 };
@@ -167,12 +166,11 @@ const getProductBySearch = async (req: Request, res: Response) => {
         { tags: { has: search } },
       ];
     }
-    console.log(queryOptions);
 
     let allProduct = await prisma.product.findMany(queryOptions);
+
     res.status(200).json({ message: "all data get successfully", allProduct });
   } catch (error) {
-    // console.log(error);
     res.status(500).json({ message: "product can't get", error });
   }
 };
@@ -254,7 +252,6 @@ const getAllProduct = async (req: Request, res: Response) => {
     let allProduct = await prisma.product.findMany(queryOptions);
     res.status(200).json({ message: "all data get successfully", allProduct });
   } catch (error) {
-    // console.log(error);
     res.status(500).json({ message: "product can't get", error });
   }
 };
