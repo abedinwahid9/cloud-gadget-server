@@ -4,7 +4,7 @@ import { hashPassword, passwordCompare } from "../services/auth.services";
 import { jwtSign, jwtVerify } from "../libs/jwt/jwt";
 
 const access_token_expires = 15 * 60 * 1000;
-const jwt_expires = "15m";
+const jwt_expires = "5hr";
 
 // ----------------- check me ------------------------
 const checkMe = async (req: Request, res: Response) => {

@@ -1,8 +1,8 @@
 import express from "express";
-import { allUser } from "../controllers/user.controller";
+import { userGetRoleBased } from "../controllers/user.controller";
 
 const router = express.Router();
 
-router.get("/", allUser);
+router.get("/:role", userGetRoleBased);
 
 export default router;
