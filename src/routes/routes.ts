@@ -7,9 +7,11 @@ import subCategoryRouter from "./subcategory.route";
 import bannerRouter from "./banner.route";
 import signupRouter from "./auth.route";
 import otpRouter from "./otp.route";
+import userRouter from "./user.route";
 
 const router = express.Router();
 
+router.use("/user", userRouter);
 router.use("/product", productRoute);
 router.use("/upload", uploadRoute);
 router.use("/promotion/sliders", slidersRoute);

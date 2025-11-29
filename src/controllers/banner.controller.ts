@@ -5,7 +5,6 @@ const createBanner = async (req: Request, res: Response) => {
   try {
     const { banners } = req.body;
     const { id } = req.params;
-    console.log(id);
 
     if (!Array.isArray(banners) || banners.length === 0) {
       return res
