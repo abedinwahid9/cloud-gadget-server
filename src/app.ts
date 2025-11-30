@@ -14,10 +14,7 @@ app.use(express.urlencoded({ extended: true, limit: "100mb" }));
 app.use(helmet());
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "https://cloud-gadget-server.onrender.com",
-    ],
+    origin: ["http://localhost:3000", "https://cloudiegadget.netlify.app"],
     credentials: true,
   })
 );

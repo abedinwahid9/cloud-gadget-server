@@ -8,6 +8,7 @@ import bannerRouter from "./banner.route";
 import signupRouter from "./auth.route";
 import otpRouter from "./otp.route";
 import userRouter from "./user.route";
+import wishlistRouter from "./wishlist.route";
 
 const router = express.Router();
 
@@ -20,5 +21,6 @@ router.use("/sub-category", subCategoryRouter);
 router.use("/banner", bannerRouter);
 router.use("/auth", signupRouter);
 router.use("/otp", otpRouter);
+router.use("/wishlist", wishlistRouter);
 
 export default router;

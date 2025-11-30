@@ -10,7 +10,7 @@ model User {
   // addresses      Address[]   @relation("UserAddresses")
   // orders         Order[]     @relation("UserOrders")
   // reviews        Review[]    @relation("UserReviews")
-  // wishlistItems  Wishlist[]  @relation("UserWishlist")
+  wishlistItems  Wishlist[]  
 }
 
 enum Role {
