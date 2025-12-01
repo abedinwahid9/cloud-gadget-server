@@ -5,7 +5,7 @@ import categoryRoute from "./category.route";
 import slidersRoute from "./sliders.route";
 import subCategoryRouter from "./subcategory.route";
 import bannerRouter from "./banner.route";
-import signupRouter from "./auth.route";
+import authRouter from "./auth.route";
 import otpRouter from "./otp.route";
 import userRouter from "./user.route";
 import wishlistRouter from "./wishlist.route";
@@ -19,7 +19,7 @@ router.use("/promotion/sliders", slidersRoute);
 router.use("/category", categoryRoute);
 router.use("/sub-category", subCategoryRouter);
 router.use("/banner", bannerRouter);
-router.use("/auth", signupRouter);
+router.use("/auth", authRouter);
 router.use("/otp", otpRouter);
 router.use("/wishlist", wishlistRouter);
 
