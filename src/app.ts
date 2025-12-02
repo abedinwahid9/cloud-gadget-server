@@ -9,8 +9,8 @@ var cookieParser = require("cookie-parser");
 const app = express();
 
 // Middlewares
-app.use(express.json({ limit: "100mb" }));
-app.use(express.urlencoded({ extended: true, limit: "100mb" }));
+app.use(express.json({ limit: "1000mb" }));
+app.use(express.urlencoded({ extended: true, limit: "1000mb" }));
 app.use(helmet());
 app.use(
   cors({

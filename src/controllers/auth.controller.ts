@@ -56,7 +56,7 @@ const userCreate = async (req: Request, res: Response) => {
 
     // Set cookie for user role
     res.cookie("user_role", newUser.role, {
-      httpOnly: true,
+      httpOnly: false,
       secure: true, // set to true in production
       sameSite: "none",
       maxAge: access_token_expires,
@@ -83,7 +83,8 @@ const userLogin = async (req: Request, res: Response) => {
     const user = await prisma.user.findFirst({
       where: { email },
     });
-    if (!user) return res.status(202).json({ message: "user is not exists" });
+    if (!user?.email)
+      return res.status(202).json({ message: "user is not exists" });
 
     // todo bcrypt.compare(password, dbPass);
     const confirmPassword = await passwordCompare(password, user.password);
@@ -103,7 +104,7 @@ const userLogin = async (req: Request, res: Response) => {
     });
     // Set cookie for user role
     res.cookie("user_role", user.role, {
-      httpOnly: true,
+      httpOnly: false,
       secure: true, // set to true in production
       sameSite: "none",
       maxAge: access_token_expires,
@@ -118,7 +119,7 @@ const userLogin = async (req: Request, res: Response) => {
       },
     });
   } catch (err) {
-    res.status(501).json({ message: "login failed, please try again", err });
+    res.status(500).json({ message: "login failed, please try again", err });
   }
 };
 
@@ -135,7 +136,7 @@ const userLogout = async (req: Request, res: Response) => {
     });
     // Set cookie for user role
     res.cookie("user_role", "", {
-      httpOnly: true,
+      httpOnly: false,
       secure: true, // set to true in production
       sameSite: "none",
       maxAge: 0,
