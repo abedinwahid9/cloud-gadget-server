@@ -10,6 +10,14 @@ const optSend = async (req: Request, res: Response) => {
 
     const otpGen = otpGenerate();
     const newOtp = { email, otp: otpGen };
+    const user = await prisma.user.findMany({
+      where: { email: email },
+    });
+
+    if (user.length !== 0) {
+      res.status(202).json({ message: "user already exists" });
+      return;
+    }
 
     const optUser = await prisma.otp.create({ data: newOtp });
 
