@@ -51,6 +51,7 @@ const userCreate = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: true, // set to true in production
       sameSite: "none",
+      path: "/",
       maxAge: access_token_expires,
     });
 
@@ -59,6 +60,7 @@ const userCreate = async (req: Request, res: Response) => {
       httpOnly: false,
       secure: true, // set to true in production
       sameSite: "none",
+      path: "/",
       maxAge: access_token_expires,
     });
 
@@ -100,6 +102,7 @@ const userLogin = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: true, // set to true in production
       sameSite: "none",
+      path: "/",
       maxAge: access_token_expires, // 60 minute
     });
     // Set cookie for user role
@@ -115,6 +118,7 @@ const userLogin = async (req: Request, res: Response) => {
         id: user.id,
         email: user.email,
         name: user.name,
+        path: "/",
         role: user.role,
       },
     });
@@ -132,6 +136,7 @@ const userLogout = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: true, // set to true in production
       sameSite: "none",
+      path: "/",
       maxAge: 0,
     });
     // Set cookie for user role
@@ -139,6 +144,7 @@ const userLogout = async (req: Request, res: Response) => {
       httpOnly: false,
       secure: true, // set to true in production
       sameSite: "none",
+      path: "/",
       maxAge: 0,
     });
     res.status(203).json({ message: "logout successfully" });
