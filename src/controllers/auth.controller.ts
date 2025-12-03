@@ -113,6 +113,7 @@ const userLogin = async (req: Request, res: Response) => {
       httpOnly: false,
       secure: true, // set to true in production
       sameSite: "none",
+      domain: ".onrender.com",
       maxAge: access_token_expires,
     });
     return res.status(200).json({
