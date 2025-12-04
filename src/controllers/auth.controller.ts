@@ -3,8 +3,26 @@ import prisma from "../models/prisma";
 import { hashPassword, passwordCompare } from "../services/auth.services";
 import { jwtSign, jwtVerify } from "../libs/jwt/jwt";
 
+type CookieOptions = {
+  httpOnly: boolean;
+  secure: boolean;
+  sameSite: boolean | "none" | "lax" | "strict" | undefined;
+  path: string;
+  maxAge: number;
+};
+
 const access_token_expires = 15 * 60 * 1000;
 const jwt_expires = "5hr";
+
+const isProd = process.env.NODE_ENV === "production";
+
+const cookieOptions: CookieOptions = {
+  httpOnly: true,
+  secure: isProd,
+  sameSite: isProd ? "none" : "lax",
+  path: "/",
+  maxAge: access_token_expires,
+};
 
 // ----------------- check me ------------------------
 const checkMe = async (req: Request, res: Response) => {
@@ -47,22 +65,10 @@ const userCreate = async (req: Request, res: Response) => {
       jwt_expires
     );
     // Set cookie for token
-    res.cookie("access_token", accessToken, {
-      httpOnly: false,
-      secure: true, // set to true in production
-      sameSite: "none",
-      priority: "high",
-      maxAge: access_token_expires,
-    });
+    res.cookie("access_token", accessToken, cookieOptions);
 
     // Set cookie for user role
-    res.cookie("user_role", newUser.role, {
-      httpOnly: false,
-      secure: true, // set to true in production
-      sameSite: "none",
-      priority: "high",
-      maxAge: access_token_expires,
-    });
+    res.cookie("user_role", newUser.role, cookieOptions);
 
     res.status(200).json({
       message: "signup successfully",
@@ -98,21 +104,10 @@ const userLogin = async (req: Request, res: Response) => {
       jwt_expires
     );
     // Set cookie
-    res.cookie("access_token", accessToken, {
-      httpOnly: false,
-      secure: true, // set to true in production
-      sameSite: "none",
-      priority: "high",
-      maxAge: access_token_expires, // 60 minute
-    });
+    res.cookie("access_token", accessToken, cookieOptions);
     // Set cookie for user role
-    res.cookie("user_role", user.role, {
-      httpOnly: false,
-      secure: true, // set to true in production
-      sameSite: "none",
-      priority: "high",
-      maxAge: access_token_expires,
-    });
+    res.cookie("user_role", user.role, cookieOptions);
+
     return res.status(200).json({
       message: "login successful",
       user: {
@@ -129,29 +124,16 @@ const userLogin = async (req: Request, res: Response) => {
   }
 };
 
-// ---------- logout functionality ---------------------
 const userLogout = async (req: Request, res: Response) => {
   try {
-    const token = req.cookies.access_token;
-    if (!token) return res.status(401).json({ message: "Not logged in" });
-    res.cookie("access_token", "invalid", {
-      httpOnly: false,
-      secure: true, // set to true in production
-      sameSite: "none",
-      priority: "high",
-      maxAge: 0,
-    });
-    // Set cookie for user role
-    res.cookie("user_role", "", {
-      httpOnly: false,
-      secure: true, // set to true in production
-      sameSite: "none",
-      priority: "high",
-      maxAge: 0,
-    });
-    res.status(203).json({ message: "logout successfully" });
+    // Delete cookies by setting maxAge=0
+    res.cookie("access_token", "", { ...cookieOptions, maxAge: 0 });
+
+    res.cookie("user_role", "", { ...cookieOptions, maxAge: 0 });
+
+    return res.status(200).json({ message: "Logout successfully" });
   } catch (err) {
-    res.status(503).json({ message: "logout failed", err });
+    return res.status(503).json({ message: "Logout failed", err });
   }
 };
 
