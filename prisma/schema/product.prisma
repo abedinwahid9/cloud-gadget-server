@@ -17,5 +17,5 @@ model Product {
   updatedAt      DateTime    @updatedAt
   // reviews        Review[]    @relation("ProductReviews")
   // orderItems     Order[]
-  // wishlistItems  Wishlist[]
+  wishlistItems  Wishlist[]
 }

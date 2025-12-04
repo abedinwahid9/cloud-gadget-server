@@ -1,6 +1,39 @@
 import { Request, Response } from "express";
 import prisma from "../models/prisma";
 
+const getAllWistListByUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const wishlist = await prisma.wishlist.findMany({
+      where: { userId: userId },
+      select: {
+        user: {
+          select: {
+            name: true,
+            email: true,
+            id: true,
+          },
+        },
+        product: {
+          select: {
+            id: true,
+            title: true,
+            images: true,
+            price: true,
+            discount: true,
+            category: true,
+          },
+        },
+      },
+    });
+    const wishlistProducts = wishlist.map((item) => item.product);
+
+    res.status(200).json({ message: "get all wishlist", wishlistProducts });
+  } catch (err) {
+    res.status(500).json({ message: "wishlist not get", err });
+  }
+};
+
 const wishlistCreate = async (req: Request, res: Response) => {
   try {
     const body = req.body;
@@ -23,4 +56,4 @@ const wishlistCreate = async (req: Request, res: Response) => {
   }
 };
 
-export { wishlistCreate };
+export { wishlistCreate, getAllWistListByUser };
