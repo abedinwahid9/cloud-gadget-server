@@ -18,7 +18,7 @@ const isProd = process.env.NODE_ENV === "production";
 
 const cookieOptions: CookieOptions = {
   httpOnly: true,
-  secure: isProd,
+  secure: true,
   sameSite: "none",
   path: "/",
   maxAge: access_token_expires,
