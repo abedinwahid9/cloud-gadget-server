@@ -51,7 +51,6 @@ const userCreate = async (req: Request, res: Response) => {
       httpOnly: false,
       secure: true, // set to true in production
       sameSite: "none",
-      path: "/",
       priority: "high",
       maxAge: access_token_expires,
     });
@@ -61,7 +60,6 @@ const userCreate = async (req: Request, res: Response) => {
       httpOnly: false,
       secure: true, // set to true in production
       sameSite: "none",
-      path: "/",
       priority: "high",
       maxAge: access_token_expires,
     });
@@ -104,7 +102,6 @@ const userLogin = async (req: Request, res: Response) => {
       httpOnly: false,
       secure: true, // set to true in production
       sameSite: "none",
-      path: "/",
       priority: "high",
       maxAge: access_token_expires, // 60 minute
     });
@@ -114,7 +111,6 @@ const userLogin = async (req: Request, res: Response) => {
       secure: true, // set to true in production
       sameSite: "none",
       priority: "high",
-
       maxAge: access_token_expires,
     });
     return res.status(200).json({
@@ -142,7 +138,6 @@ const userLogout = async (req: Request, res: Response) => {
       httpOnly: false,
       secure: true, // set to true in production
       sameSite: "none",
-      path: "/",
       priority: "high",
       maxAge: 0,
     });
@@ -152,8 +147,6 @@ const userLogout = async (req: Request, res: Response) => {
       secure: true, // set to true in production
       sameSite: "none",
       priority: "high",
-      path: "/",
-
       maxAge: 0,
     });
     res.status(203).json({ message: "logout successfully" });
