@@ -49,20 +49,20 @@ const userCreate = async (req: Request, res: Response) => {
     // Set cookie for token
     res.cookie("access_token", accessToken, {
       httpOnly: false,
-      secure: false, // set to true in production
+      secure: true, // set to true in production
       sameSite: "none",
       path: "/",
-
+      priority: "high",
       maxAge: access_token_expires,
     });
 
     // Set cookie for user role
     res.cookie("user_role", newUser.role, {
       httpOnly: false,
-      secure: false, // set to true in production
+      secure: true, // set to true in production
       sameSite: "none",
       path: "/",
-
+      priority: "high",
       maxAge: access_token_expires,
     });
 
@@ -102,17 +102,18 @@ const userLogin = async (req: Request, res: Response) => {
     // Set cookie
     res.cookie("access_token", accessToken, {
       httpOnly: false,
-      secure: false, // set to true in production
+      secure: true, // set to true in production
       sameSite: "none",
       path: "/",
-
+      priority: "high",
       maxAge: access_token_expires, // 60 minute
     });
     // Set cookie for user role
     res.cookie("user_role", user.role, {
       httpOnly: false,
-      secure: false, // set to true in production
+      secure: true, // set to true in production
       sameSite: "none",
+      priority: "high",
 
       maxAge: access_token_expires,
     });
@@ -139,17 +140,18 @@ const userLogout = async (req: Request, res: Response) => {
     if (!token) return res.status(401).json({ message: "Not logged in" });
     res.cookie("access_token", "invalid", {
       httpOnly: false,
-      secure: false, // set to true in production
+      secure: true, // set to true in production
       sameSite: "none",
       path: "/",
-
+      priority: "high",
       maxAge: 0,
     });
     // Set cookie for user role
     res.cookie("user_role", "", {
       httpOnly: false,
-      secure: false, // set to true in production
+      secure: true, // set to true in production
       sameSite: "none",
+      priority: "high",
       path: "/",
 
       maxAge: 0,
