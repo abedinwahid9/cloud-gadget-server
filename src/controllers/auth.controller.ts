@@ -99,7 +99,7 @@ const userLogin = async (req: Request, res: Response) => {
     if (!confirmPassword)
       return res
         .status(201)
-        .json({ message: "password wrong", type: "password" });
+        .json({ message: "password wrong", type: "password  " });
 
     const accessToken = await jwtSign(
       { email: user.email, id: user.id, role: user.role },
