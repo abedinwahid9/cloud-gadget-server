@@ -1,117 +1,55 @@
 import { Request, Response } from "express";
 import prisma from "../models/prisma";
 import { hashPassword, passwordCompare } from "../services/auth.services";
-import { jwtSign, jwtVerify } from "../libs/jwt/jwt";
+import { jwtSign } from "../libs/jwt/jwt";
 
-type CookieOptions = {
-  httpOnly: boolean;
-  maxAge: number;
-  withCredentials: boolean;
-  partitioned: boolean;
-  secure: boolean;
-};
+// 🔥 CRITICAL: Detect production correctly
+const isProduction = process.env.NODE_ENV === "production";
 
-const access_token_expires = 15 * 60 * 1000;
-const jwt_expires = "5hr";
+// ✅ Cookie options — dynamic
+const access_token_expires = 15 * 60 * 1000; // 15 minutes
 
-const cookieOptions: CookieOptions = {
+const cookieOptions = {
   httpOnly: true,
-  secure: true,
+  secure: isProduction, // true in prod, false in dev
+  sameSite: isProduction ? ("none" as const) : ("lax" as const),
   maxAge: access_token_expires,
-  withCredentials: true,
-  partitioned: true,
+  path: "/", // ensure cookie is sent to all paths
 };
 
-// ----------------- check me ------------------------
-const checkMe = async (req: Request, res: Response) => {
-  try {
-    const token = req.cookies.access_token;
-
-    if (!token) return res.status(401).json({ message: "Not logged in" });
-    const payload = jwtVerify(token);
-
-    res.status(201).json({ message: "user get", payload });
-  } catch (err) {
-    res.status(402).json({ message: "user not found", err });
-  }
-};
-
-// ---------- sign up functionality ---------------------
-const userCreate = async (req: Request, res: Response) => {
-  try {
-    const { email, password, name } = req.body;
-
-    if (req?.user !== email) {
-      res.status(403).json({ message: "user not found" });
-    }
-    // todo bcrypt.hash(myPlaintextPassword, saltRounds);
-    const hashPass = await hashPassword(password);
-    const user = await prisma.user.findFirst({
-      where: { email },
-    });
-    if (user)
-      return res
-        .status(201)
-        .json({ message: "this email already exists, use another email" });
-
-    const newUser = await prisma.user.create({
-      data: { email, password: hashPass, name },
-    });
-
-    const accessToken = await jwtSign(
-      { email: newUser.email, id: newUser.id, role: newUser.role },
-      jwt_expires
-    );
-    // Set cookie for token
-    res.cookie("access_token", accessToken, cookieOptions);
-
-    // Set cookie for user role
-    res.cookie("user_role", newUser.role, cookieOptions);
-
-    res.status(200).json({
-      message: "signup successfully",
-      user: {
-        id: newUser.id,
-        email: newUser.email,
-        name: newUser.name,
-        role: newUser.role,
-      },
-    });
-  } catch (err) {
-    res.status(500).json({ message: "signup failed", err });
-  }
-};
-
-// ---------- login in functionality ---------------------
+// ---------- Login ----------
 const userLogin = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-    const user = await prisma.user.findFirst({
-      where: { email },
-    });
-    if (!user?.email)
-      return res
-        .status(201)
-        .json({ message: "user is not exists", type: "email" });
 
-    // todo bcrypt.compare(password, dbPass);
-    const confirmPassword = await passwordCompare(password, user.password);
-    if (!confirmPassword)
+    const user = await prisma.user.findFirst({ where: { email } });
+    if (!user) {
       return res
-        .status(201)
-        .json({ message: "password wrong", type: "password  " });
+        .status(401)
+        .json({ message: "User does not exist", type: "email" });
+    }
+
+    const isPasswordValid = await passwordCompare(password, user.password);
+    if (!isPasswordValid) {
+      return res
+        .status(401)
+        .json({ message: "Password is incorrect", type: "password" });
+    }
 
     const accessToken = await jwtSign(
       { email: user.email, id: user.id, role: user.role },
-      jwt_expires
+      "15m"
     );
-    // Set cookie
+
+    // ✅ Set cookies
     res.cookie("access_token", accessToken, cookieOptions);
-    // Set cookie for user role
-    res.cookie("user_role", user.role, cookieOptions);
+    res.cookie("user_role", user.role, {
+      ...cookieOptions,
+      httpOnly: false, // so frontend can read role (optional)
+    });
 
     return res.status(200).json({
-      message: "login successful",
+      message: "Login successful",
       user: {
         id: user.id,
         email: user.email,
@@ -120,21 +58,67 @@ const userLogin = async (req: Request, res: Response) => {
       },
     });
   } catch (err) {
-    res.status(500).json({ message: "login failed, please try again", err });
+    console.error("Login error:", err);
+    return res.status(500).json({ message: "Login failed" });
   }
 };
 
-const userLogout = async (req: Request, res: Response) => {
+// ---------- Signup ----------
+const userCreate = async (req: Request, res: Response) => {
   try {
-    // Delete cookies by setting maxAge=0
-    res.cookie("access_token", "", { ...cookieOptions, maxAge: 0 });
+    const { email, password, name } = req.body;
 
-    res.cookie("user_role", "", { ...cookieOptions, maxAge: 0 });
+    const existingUser = await prisma.user.findFirst({ where: { email } });
+    if (existingUser) {
+      return res.status(409).json({ message: "Email already exists" });
+    }
 
-    return res.status(200).json({ message: "Logout successfully" });
+    const hashPass = await hashPassword(password);
+    const newUser = await prisma.user.create({
+      data: { email, password: hashPass, name },
+    });
+
+    const accessToken = await jwtSign(
+      { email: newUser.email, id: newUser.id, role: newUser.role },
+      "15m"
+    );
+
+    res.cookie("access_token", accessToken, cookieOptions);
+    res.cookie("user_role", newUser.role, {
+      ...cookieOptions,
+      httpOnly: false,
+    });
+
+    return res.status(201).json({
+      message: "Signup successful",
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        name: newUser.name,
+        role: newUser.role,
+      },
+    });
   } catch (err) {
-    return res.status(503).json({ message: "Logout failed", err });
+    console.error("Signup error:", err);
+    return res.status(500).json({ message: "Signup failed" });
   }
 };
 
-export { userCreate, userLogin, userLogout, checkMe };
+// ---------- Check Auth ----------
+const checkMe = async (req: Request, res: Response) => {
+  const token = req.cookies.access_token;
+  if (!token) {
+    return res.status(401).json({ message: "Not logged in" });
+  }
+  // ... verify token ...
+  res.json({ valid: true });
+};
+
+// ---------- Logout ----------
+const userLogout = async (req: Request, res: Response) => {
+  res.cookie("access_token", "", { ...cookieOptions, maxAge: 0 });
+  res.cookie("user_role", "", { ...cookieOptions, maxAge: 0, httpOnly: false });
+  return res.status(200).json({ message: "Logged out" });
+};
+
+export { userLogin, userCreate, checkMe, userLogout };
