@@ -15,7 +15,7 @@ const jwt_expires = "5hr";
 
 const cookieOptions: CookieOptions = {
   httpOnly: true,
-  secure: false,
+  secure: true,
   sameSite: "none",
   maxAge: 900000,
 };
