@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+const bcrypt = require("bcrypt");
 
 export const hashPassword = (myPlaintextPassword: string) => {
   return bcrypt.hash(myPlaintextPassword, 10);
