@@ -7,17 +7,19 @@ type CookieOptions = {
   httpOnly: boolean;
   maxAge: number;
   withCredentials: boolean;
+  partitioned: boolean;
+  secure: boolean;
 };
 
 const access_token_expires = 15 * 60 * 1000;
 const jwt_expires = "5hr";
 
-const isProd = process.env.NODE_ENV === "production";
-
 const cookieOptions: CookieOptions = {
   httpOnly: true,
+  secure: true,
   maxAge: access_token_expires,
   withCredentials: true,
+  partitioned: true,
 };
 
 // ----------------- check me ------------------------
@@ -88,12 +90,16 @@ const userLogin = async (req: Request, res: Response) => {
       where: { email },
     });
     if (!user?.email)
-      return res.status(202).json({ message: "user is not exists" });
+      return res
+        .status(201)
+        .json({ message: "user is not exists", type: "email" });
 
     // todo bcrypt.compare(password, dbPass);
     const confirmPassword = await passwordCompare(password, user.password);
     if (!confirmPassword)
-      return res.status(203).json({ message: "password wrong" });
+      return res
+        .status(201)
+        .json({ message: "password wrong", type: "password" });
 
     const accessToken = await jwtSign(
       { email: user.email, id: user.id, role: user.role },
@@ -110,8 +116,6 @@ const userLogin = async (req: Request, res: Response) => {
         id: user.id,
         email: user.email,
         name: user.name,
-        path: "/",
-
         role: user.role,
       },
     });
