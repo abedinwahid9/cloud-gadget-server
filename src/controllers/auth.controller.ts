@@ -5,10 +5,8 @@ import { jwtSign, jwtVerify } from "../libs/jwt/jwt";
 
 type CookieOptions = {
   httpOnly: boolean;
-  secure: boolean;
-  sameSite: boolean | "none" | "lax" | "strict" | undefined;
-  path: string;
   maxAge: number;
+  withCredentials: boolean;
 };
 
 const access_token_expires = 15 * 60 * 1000;
@@ -18,10 +16,8 @@ const isProd = process.env.NODE_ENV === "production";
 
 const cookieOptions: CookieOptions = {
   httpOnly: true,
-  secure: true,
-  sameSite: "none",
-  path: "/",
   maxAge: access_token_expires,
+  withCredentials: true,
 };
 
 // ----------------- check me ------------------------
