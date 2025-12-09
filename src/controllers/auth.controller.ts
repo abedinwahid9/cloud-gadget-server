@@ -10,14 +10,14 @@ type CookieOptions = {
   secure: boolean;
 };
 
-// const access_token_expires = 15 * 60 * 1000;
+const access_token_expires = 60 * 1000 * 15; // last number is day
 const jwt_expires = "5hr";
 
 const cookieOptions: CookieOptions = {
   httpOnly: true,
   secure: true,
   sameSite: "none",
-  maxAge: 900000,
+  maxAge: access_token_expires,
 };
 
 // ----------------- check me ------------------------
