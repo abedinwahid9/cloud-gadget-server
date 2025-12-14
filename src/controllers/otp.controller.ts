@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import transporter from "../configs/nodeEmailer.config";
 import { otpGenerate } from "../libs/optGenerator";
-
 import prisma from "../models/prisma";
+import transporter from "../configs/nodeEmailer.config";
+// import { resend, sendOtpEmail } from "../configs/resend.config";
 
 const optSend = async (req: Request, res: Response) => {
   try {
@@ -18,15 +18,16 @@ const optSend = async (req: Request, res: Response) => {
       res.status(202).json({ message: "user already exists" });
       return;
     }
-
+    // save otp in database
     const optUser = await prisma.otp.create({ data: newOtp });
-
     const info = await transporter.sendMail({
       from: "clodiegadget@gmail.com",
       to: email,
       subject: "Otp from Cloudie Gadget",
       html: `<b>your verify otp is ${otpGen}</b>`,
     });
+
+    // sendOtpEmail(email, otpGen);
 
     res.status(201).json({
       message: "otp send your email",
