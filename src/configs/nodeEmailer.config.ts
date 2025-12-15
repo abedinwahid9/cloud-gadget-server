@@ -1,29 +1,44 @@
+const nodemailer = require("nodemailer");
 import dotenv from "dotenv";
 
 dotenv.config();
-const nodemailer = require("nodemailer");
 
-// Create a test account or replace with real credentials.
+if (!process.env.EMAIL_ADDRESS || !process.env.EMAIL_PASSWORD) {
+  throw new Error("Missing email environment variables");
+}
+
 const transporter = nodemailer.createTransport({
-  // host: "smtp.gmail.com",
   host: "smtp-relay.brevo.com",
-  // port: 465,
   port: 587,
-  secure: false, // true for 465, false for other ports
+  secure: false,
   auth: {
     user: process.env.EMAIL_ADDRESS,
-    pass: process.env.EAMIL_PASSWORD,
+    pass: process.env.EMAIL_PASSWORD,
   },
 });
 
-const sendOtpEmail = async (email: string, otp: string) => {
-  const info = await transporter.sendMail({
-    from: "OTP Service <devilthe9999@gmail.com>",
-    to: email,
-    subject: "Otp from Cloudie Gadget",
-    html: `<b>your verify otp is ${otp}</b>`,
-  });
-  console.log(info);
+const sendOtpEmail = async (toEmail: string, otp: string) => {
+  try {
+    const info = await transporter.sendMail({
+      from: `"Cloudie Gadget OTP" <cloudiegadget@gmail.com>`,
+      to: toEmail,
+      subject: "Your OTP Code",
+      html: `
+        <div style="font-family: Arial, sans-serif;">
+          <h2>OTP Verification</h2>
+          <p>Your OTP code is:</p>
+          <h1>${otp}</h1>
+          <p>This code will expire in 5 minutes.</p>
+        </div>
+      `,
+    });
+
+    // console.log("OTP email sent:", info.messageId);
+    return true;
+  } catch (error) {
+    console.error("Failed to send OTP email:", error);
+    return false;
+  }
 };
 
 export default sendOtpEmail;
