@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { otpGenerate } from "../libs/optGenerator";
 import prisma from "../models/prisma";
-import transporter from "../configs/nodeEmailer.config";
+import sendOtpEmail from "../configs/nodeEmailer.config";
 // import { resend, sendOtpEmail } from "../configs/resend.config";
 
 const optSend = async (req: Request, res: Response) => {
@@ -20,14 +20,8 @@ const optSend = async (req: Request, res: Response) => {
     }
     // save otp in database
     const optUser = await prisma.otp.create({ data: newOtp });
-    const info = await transporter.sendMail({
-      from: "OTP Service <devilthe9999@gmail.com>",
-      to: email,
-      subject: "Otp from Cloudie Gadget",
-      html: `<b>your verify otp is ${otpGen}</b>`,
-    });
-    console.log(info);
-    // sendOtpEmail(email, otpGen);
+
+    sendOtpEmail(email, otpGen);
 
     res.status(201).json({
       message: "otp send your email",
