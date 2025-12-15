@@ -16,4 +16,14 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export default transporter;
+const sendOtpEmail = async (email: string, otp: string) => {
+  const info = await transporter.sendMail({
+    from: "OTP Service <devilthe9999@gmail.com>",
+    to: email,
+    subject: "Otp from Cloudie Gadget",
+    html: `<b>your verify otp is ${otp}</b>`,
+  });
+  console.log(info);
+};
+
+export default sendOtpEmail;
