@@ -6,7 +6,7 @@ import {
 
 const router = express.Router();
 
-router.get("/:userId", getAllWistListByUser);
+router.get("/me", getAllWistListByUser);
 router.post("/", wishlistCreate);
 
 export default router;
