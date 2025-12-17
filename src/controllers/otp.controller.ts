@@ -25,7 +25,7 @@ const optSend = async (req: Request, res: Response) => {
 
     res.status(201).json({
       message: "otp send your email",
-      // info
+      otp: otpGen,
     });
   } catch (err) {
     res.status(501).json({ message: "otp request failed try again", err });
