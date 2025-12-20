@@ -61,4 +61,18 @@ const wishlistCreate = async (req: Request, res: Response) => {
   }
 };
 
-export { wishlistCreate, getAllWistListByUser };
+const wishlistDelete = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const deleteWishlist = await prisma.wishlist.delete({
+      where: { productId: id },
+    });
+
+    res.status(201).json({ message: "delete wishlist", deleteWishlist });
+  } catch (err) {
+    res.status(501).json({ message: "wishlist not delete", err });
+  }
+};
+
+export { wishlistCreate, getAllWistListByUser, wishlistDelete };
