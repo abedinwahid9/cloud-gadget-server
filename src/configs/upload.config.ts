@@ -8,7 +8,8 @@ const handleMultipleUploadService = (
     files: files.map((file) => ({
       originalName: file.originalname,
       filename: file.filename,
-      path: `${protocol}://${baseUrl}/uploads/${file.filename}`,
+      // path: `${protocol}://${baseUrl}/uploads/${file.filename}`,
+      path: `/uploads/${file.filename}`,
       size: file.size,
     })),
   };

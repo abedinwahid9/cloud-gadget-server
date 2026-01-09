@@ -11,6 +11,7 @@ app.use(cookieParser());
 app.use(express.json({ limit: "1000mb" }));
 app.use(express.urlencoded({ extended: true, limit: "1000mb" }));
 app.use(helmet());
+app.use(express.static("public"));
 
 app.use(
   cors({
@@ -18,8 +19,6 @@ app.use(
     credentials: true, // ← essential
   })
 );
-
-app.use(express.static("public"));
 
 // route
 app.use("/api/v1", router);

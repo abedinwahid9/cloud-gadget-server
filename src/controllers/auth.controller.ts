@@ -10,8 +10,8 @@ type CookieOptions = {
   secure: boolean;
 };
 
-const access_token_expires = 60 * 1000 * 15; // last number is day
-const jwt_expires = "5hr";
+const access_token_expires = 60 * 1000 * 700; // last number is day
+const jwt_expires = "7d";
 
 const cookieOptions: CookieOptions = {
   httpOnly: true,
