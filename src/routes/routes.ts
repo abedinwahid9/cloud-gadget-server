@@ -9,6 +9,8 @@ import authRouter from "./auth.route";
 import otpRouter from "./otp.route";
 import userRouter from "./user.route";
 import wishlistRouter from "./wishlist.route";
+import addressRouter from "./address.route";
+import chargeRouter from "./charge.route";
 
 const router = express.Router();
 
@@ -22,5 +24,7 @@ router.use("/banner", bannerRouter);
 router.use("/auth", authRouter);
 router.use("/otp", otpRouter);
 router.use("/wishlist", wishlistRouter);
+router.use("/address", addressRouter);
+router.use("/charge", chargeRouter);
 
 export default router;

@@ -7,7 +7,7 @@ model User {
   isBlocked      Boolean     @default(false) 
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
-  // addresses      Address[]   @relation("UserAddresses")
+  Address      Address?
   // orders         Order[]     @relation("UserOrders")
   // reviews        Review[]    @relation("UserReviews")
   wishlistItems  Wishlist[]  

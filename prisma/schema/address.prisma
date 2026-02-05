@@ -1,7 +1,9 @@
-// model Address {
-//   id        String @id @default(auto()) @map("_id") @db.ObjectId
-//   userEmail String          // <-- field in Address that stores user email
-//   user      User @relation("UserAddresses", fields: [id], references: [email])
-//   street    String
-//   city      String
-// }
+model Address {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  userEmail String @unique @db.ObjectId
+  user      User @relation( fields: [userEmail], references: [email])
+  email String
+  address    String
+  upazila      String
+  district      String
+}

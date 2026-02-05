@@ -6,6 +6,7 @@ model Product {
   images         String[]
   category       String
   sub_category   String
+  // db_price String
   price          Float
   discount       Float
   stock_quantity Int
