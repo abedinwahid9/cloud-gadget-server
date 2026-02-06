@@ -21,7 +21,7 @@ const getZoneCharge = async (req: Request, res: Response) => {
   try {
     const zone = await prisma.charge.findMany();
 
-    res.status(500).json({ message: "all zone get successfully", zone });
+    res.status(200).json({ message: "all zone get successfully", zone });
   } catch (err) {
     res.status(500).json({ message: "not get zone", err });
   }
