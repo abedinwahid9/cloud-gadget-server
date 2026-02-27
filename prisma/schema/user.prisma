@@ -1,16 +1,19 @@
 model User {
   id             String      @id @default(auto()) @map("_id") @db.ObjectId 
-  name           String
-  email          String      @unique
-  password       String
-  role           Role        @default(CUSTOMER) 
-  isBlocked      Boolean     @default(false) 
+  name           String?
+  email          String?     @unique
+  mobileNumber   String      @unique
+  password       String?
+  role           Role        @default(CUSTOMER)
+  isBlocked      Boolean     @default(false)
+
+  addresses      Address[]        // 🔥 One-to-many
+  orders         Order[]
+  wishlistItems  Wishlist[]
+
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
-  Address      Address?
-  // orders         Order[]     @relation("UserOrders")
-  // reviews        Review[]    @relation("UserReviews")
-  wishlistItems  Wishlist[]  
+
 }
 
 enum Role {

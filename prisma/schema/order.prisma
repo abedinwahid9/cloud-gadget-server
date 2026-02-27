@@ -1,16 +1,71 @@
-// model Order {
-//   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-//   userId    String   @db.ObjectId          // <-- local field to store user ID
-//   user      User     @relation("UserOrders", fields: [id], references: [email])
-//   total     Float
-//   status    OrderStatus @default(PENDING)
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
+model Order {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderNumber String   @unique
 
-// enum OrderStatus {
-//   PENDING
-//   PROCESSING
-//   COMPLETED
-//   CANCELLED
-// }
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String   @db.ObjectId
+
+  items       OrderItem[]   // 🔥 One-to-many
+
+  pricing     Pricing
+  shipping    ShippingAddress
+
+  status      OrderStatus @default(PENDING)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
+model OrderItem {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+
+  order       Order    @relation(fields: [orderId], references: [id])
+  orderId     String   @db.ObjectId
+
+  productId   String   @db.ObjectId
+  productName String
+  productImage String?
+  vendorId    String?  @db.ObjectId
+
+  quantity    Int
+  price       Float
+  subtotal    Float
+
+  createdAt   DateTime @default(now())
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([vendorId])
+}
+
+type Pricing {
+  subtotal        Float   // sum of item subtotals
+  discount        Float   // coupon / campaign discount
+  shippingFee     Float
+  tax             Float
+  grandTotal      Float   // final payable amount
+
+  currency        String  // BDT, USD
+}
+
+type ShippingAddress {
+  fullName  String
+  mobile    String
+  address   String
+  upazila   String
+  district  String
+}
+
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  OUTFORDELIVERY
+  DELIVERED
+  CANCELLED
+}
