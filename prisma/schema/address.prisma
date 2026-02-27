@@ -1,7 +1,16 @@
-// model Address {
-//   id        String @id @default(auto()) @map("_id") @db.ObjectId
-//   userEmail String          // <-- field in Address that stores user email
-//   user      User @relation("UserAddresses", fields: [id], references: [email])
-//   street    String
-//   city      String
-// }
+model Address {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String   @db.ObjectId
+
+  fullName    String
+  mobile      String
+  email       String?
+  address     String
+  upazila     String
+  district    String
+  isDefault   Boolean  @default(false)
+
+  createdAt   DateTime @default(now())
+}

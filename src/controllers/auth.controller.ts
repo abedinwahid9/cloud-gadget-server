@@ -10,8 +10,8 @@ type CookieOptions = {
   secure: boolean;
 };
 
-const access_token_expires = 60 * 1000 * 15; // last number is day
-const jwt_expires = "5hr";
+const access_token_expires = 60 * 1000 * 700; // last number is day
+const jwt_expires = "7d";
 
 const cookieOptions: CookieOptions = {
   httpOnly: true,
@@ -37,7 +37,7 @@ const checkMe = async (req: Request, res: Response) => {
 // ---------- sign up functionality ---------------------
 const userCreate = async (req: Request, res: Response) => {
   try {
-    const { email, password, name } = req.body;
+    const { email, password, name, mobileNumber } = req.body;
 
     if (req?.user !== email) {
       res.status(403).json({ message: "user not found" });
@@ -53,12 +53,12 @@ const userCreate = async (req: Request, res: Response) => {
         .json({ message: "this email already exists, use another email" });
 
     const newUser = await prisma.user.create({
-      data: { email, password: hashPass, name },
+      data: { email, password: hashPass, name, mobileNumber },
     });
 
     const accessToken = await jwtSign(
       { email: newUser.email, id: newUser.id, role: newUser.role },
-      jwt_expires
+      jwt_expires,
     );
     // Set cookie for token
     res.cookie("access_token", accessToken, cookieOptions);
@@ -92,6 +92,10 @@ const userLogin = async (req: Request, res: Response) => {
         .status(201)
         .json({ message: "user is not exists", type: "email" });
 
+    if (user.password === null) {
+      return;
+    }
+
     // todo bcrypt.compare(password, dbPass);
     const confirmPassword = await passwordCompare(password, user.password);
     if (!confirmPassword)
@@ -101,7 +105,7 @@ const userLogin = async (req: Request, res: Response) => {
 
     const accessToken = await jwtSign(
       { email: user.email, id: user.id, role: user.role },
-      jwt_expires
+      jwt_expires,
     );
     // Set cookie
     res.cookie("access_token", accessToken, cookieOptions);

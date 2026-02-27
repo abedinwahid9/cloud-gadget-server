@@ -1,0 +1,5 @@
+model charge{
+    id String @id @default(auto()) @map("_id") @db.ObjectId()
+    zone String
+    charge Int
+}

@@ -26,7 +26,7 @@ const getAllFiles = async (req: Request, res: Response) => {
     const fileUrls = files.map((file, i) => ({
       id: i,
       name: file,
-      thumbnail: `${req.protocol}://${baseUrl}/uploads/${file}`,
+      thumbnail: `/uploads/${file}`,
     }));
 
     res.json({ files: fileUrls });
